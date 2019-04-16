@@ -47,6 +47,7 @@ function gulpParallel (...args) {
 const browserPlatforms = [
   'firefox',
   'chrome',
+  'brave',
   'edge',
   'opera',
 ]
@@ -161,6 +162,17 @@ gulp.task('manifest:chrome', function () {
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
+gulp.task('manifest:brave', function () {
+  return gulp.src('./dist/brave/manifest.json')
+  .pipe(jsoneditor(function (json) {
+    delete json.applications
+    delete json.browser_action
+    json.author = 'https://brave.com'
+    return json
+  }))
+  .pipe(gulp.dest('./dist/brave', { overwrite: true }))
+})
+
 gulp.task('manifest:opera', function () {
   return gulp.src('./dist/opera/manifest.json')
   .pipe(jsoneditor(function (json) {
@@ -180,6 +192,7 @@ gulp.task('manifest:production', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
+    './dist/brave/manifest.json',
     './dist/edge/manifest.json',
     './dist/opera/manifest.json',
   ], {base: './dist/'})
@@ -199,6 +212,7 @@ gulp.task('manifest:testing', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
+    './dist/brave/manifest.json',
   ], {base: './dist/'})
 
   // Exclude chromereload script in production:
@@ -215,6 +229,7 @@ gulp.task('copy',
     gulp.parallel(...copyTaskNames),
     'manifest:production',
     'manifest:chrome',
+    'manifest:brave',
     'manifest:opera'
   )
 )
@@ -223,6 +238,7 @@ gulp.task('dev:copy',
   gulp.series(
     gulp.parallel(...copyDevTaskNames),
     'manifest:chrome',
+    'manifest:brave',
     'manifest:opera'
   )
 )
@@ -231,6 +247,7 @@ gulp.task('test:copy',
   gulp.series(
     gulp.parallel(...copyDevTaskNames),
     'manifest:chrome',
+    'manifest:brave',
     'manifest:opera',
     'manifest:testing'
   )
@@ -391,10 +408,11 @@ gulp.task('clean', function clean () {
 
 // zip tasks for distribution
 gulp.task('zip:chrome', zipTask('chrome'))
+gulp.task('zip:brave', zipTask('brave'))
 gulp.task('zip:firefox', zipTask('firefox'))
 gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
-gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera', 'zip:brave'))
 
 // high level tasks
 
