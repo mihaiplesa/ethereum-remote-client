@@ -189,7 +189,7 @@
     "valid-url": "^1.0.9",
     "web3": "^0.20.1",
     "web3-stream-provider": "^3.0.1",
-    "webrtc-adapter": "^6.3.0",
+    "webrtc-adapter": "^7.7.0",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
